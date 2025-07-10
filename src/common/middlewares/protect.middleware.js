@@ -1,43 +1,60 @@
-import jwt from "jsonwebtoken";
-import { ACCESS_TOKEN_SECRET } from "../constant/app.constant.js";
-import { UnauthorizedException } from "../helpers/exception.helper.js";
-// import tokenService from "../../services/token.service.js"; // TODO: Create this file
+
+
+import { UnauthorizedException } from "../helpers/exception.helper";
+import tokenService from "../../services/token.Service.js";
 import prisma from "../prisma/init.prisma.js";
+/**
+ * Middleware to protect routes by checking for a valid JWT token in the request header.
+ * If the token is missing or invalid, it throws an UnauthorizedException.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ */
+ const protect = async  (req, res, next)=> {
+    // Middleware để bảo vệ các route bằng cách kiểm tra token JWT hợp lệ trong request header
+    // Nếu token bị thiếu hoặc không hợp lệ, ném ra UnauthorizedException
+req.ischeckprotect = true; // Đặt một thuộc tính để xác định rằng middleware đã được thực thi
 
-const protect = async (req, res, next) => {
-   req.isProtect = true;
+    //kiêm tra token trong request header
+    const authHeader = req.headers?.authorization || "";
+    const [type, token] = authHeader.split(" ");
+    //Bearer+ ' ' + token
+    //kiêm tra token trong request header
+    if (!token) {
+        throw new UnauthorizedException("Vui long dang nhap");
+    }
+    //kiểm tra token trong request header
+    if (type !== "Bearer") {
+        throw new UnauthorizedException("Token khong hop le");
+    }
 
-   const authHeader = req.headers?.authorization || "";
-   const [type, token] = authHeader.split(" ");
-   if (!token) {
-      throw new UnauthorizedException("Không có token");
-   }
-   if (type !== `Bearer`) {
-      throw new UnauthorizedException("Kiểu token không hợp lệ");
-   }
+    //kiem tra token có hợp le hay khong
+    const decode = tokenService.verifyAccessToken(token);
 
-   // TODO: Implement token verification when tokenService is available
-   // For now, just pass through without authentication
-   console.log({ token });
-   
-   // Temporary: Skip token verification
-   // const decode = tokenService.verifyAccessToken(token);
-   // const user = await prisma.users.findUnique({
-   //    where: {
-   //       user_id: decode.userId,
-   //    }
-   // });
-   
-   // req.user = user;
-   req.user = { id: 1, email: "test@example.com" }; // Temporary mock user
+    const user = await prisma.users.findUnique({
+        where: {
+            id: decode.userID
+        }
+    })
 
-   console.log({
-      token,
-      type,
-      message: "Token verification temporarily disabled"
-   });
 
-   next();
-};
+    req.user = user; //gán user vào request để sử dụng trong các middleware hoặc route handler sau này
+    if (!user) {
+        throw new UnauthorizedException("User not found");
+    }
+
+
+
+    console.log({
+        type,
+        token,
+        decode
+    });
+
+    //bearer+ ' ' + token
+    //key + token
+    next();
+}
 
 export default protect;

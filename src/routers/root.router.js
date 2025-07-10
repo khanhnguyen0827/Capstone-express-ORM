@@ -1,30 +1,17 @@
-import express from "express";
-import authRouter from "./auth.router.js";
+import express from 'express';
 
-// Uncomment these when the files exist
-// import roleRouter from "./role.router.js";
-// import userRouter from "./user.router.js";
-// import swaggerUi from "swagger-ui-express";
-// import swaggerDocument from "../common/swagger/init.swagger.js";
-
+import DemoRouter from './demo.router.js';
+import acticlesRouter from './articles.router.js';
+import authRouter from './auth.router.js';
+import roleRouter from './role.router.js';
+import permissionRouter from './permission.router.js';
 const rootRouter = express.Router();
 
-// Swagger documentation - uncomment when swagger file exists
-// rootRouter.use("/api-docs", swaggerUi.serve);
-// rootRouter.get(
-//    "/api-docs",
-//    swaggerUi.setup(swaggerDocument, {
-//       swaggerOptions: {
-//          persistAuthorization: true,
-//       },
-//    })
-// );
+rootRouter.use('/demo', DemoRouter);
+rootRouter.use('/article', acticlesRouter);
+rootRouter.use('/auth', authRouter);
+rootRouter.use('/role', roleRouter);
+rootRouter.use('/permission', permissionRouter);
 
-// Routes
-rootRouter.use("/auth", authRouter);
-
-// Add other routes when files exist
-// rootRouter.use("/user", userRouter);
-// rootRouter.use("/role", roleRouter);
 
 export default rootRouter;

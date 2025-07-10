@@ -1,29 +1,25 @@
-import { responseError } from "./response.helper";
+import { responseError } from "./response.helper.js";
 import jwt from "jsonwebtoken";
-import { statusCodes } from "./status-code.helper";
-import multer from "multer";
+import { statusCodes } from "./status-code.helper.js";
 
-export const handleError = (err, req, res, next) => {
-   console.log(`Middleware ERROR ĐẶC BIỆT`, err);
+export const handleErr = 
+       // Middleware 2
+    (err,req, res, next)=>{
+         if (err instanceof jwt.JsonWebTokenError) {
+            console.log(`Middleware gôm lỗi: ${err}`);
+            err.code = statusCodes.UNAUTHORIZED;
+            err.message = "Token không hợp lệ";
+        }
 
-   // (new Error()).
-
-   if (err instanceof jwt.JsonWebTokenError) {
-      console.log("Token không hợp lệ");
-      err.code = statusCodes.UNAUTHORIZED;
-   }
-
-   if (err instanceof jwt.TokenExpiredError) {
-      console.log("Token hết hạn");
-      err.code = statusCodes.FORBIDDEN;
-   }
-
-   if(err instanceof multer.MulterError) {
-      console.log("Multer Error", multer.MulterError.name);
-      err.code =  statusCodes.BAD_REQUEST
-   }
-
-   // const resData = responseError(err?.message, err?.code, isProduction === "true"? null : err?.stack)
-   const resData = responseError(err?.message, err?.code, err?.stack);
-   res.status(resData.statusCode).json(resData);
-};
+        if (err instanceof jwt.TokenExpiredError) {
+            console.log(`Middleware gôm lỗi: ${err}`);
+            err.code = statusCodes.FORBIDDEN;
+            err.message = "Token không hợp lệ, đã hết hạn hoặc không đúng định dạng";
+           
+        }
+       
+        console.log(`Middleware gôm lỗi: ${err}`);
+        const resdata = responseError(err?.message, err?.code, err?.stack);
+        res.status(resdata.statusCode).json( resdata);
+        return; }
+    ;
