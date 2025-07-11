@@ -1,32 +1,37 @@
 {
-  "name": "capstone-express-orm",
-  "version": "1.0.0",
-  "description": "Capstone-express-ORM",
-  "main": "sevrer.js",
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "dependencies": {
+    "@prisma/client": "^6.8.2",
+    "@types/jest": "^29.5.14",
+    "bcrypt": "^6.0.0",
+    "chalk": "^5.4.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "extensionless": "^1.9.9",
+    "google-auth-library": "^9.15.1",
+    "jest": "^30.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.14.1",
+    "nodemailer": "^7.0.3",
+    "nodemo": "^1.0.0",
+    "prisma": "^6.8.2",
+    "sequelize": "^6.37.7",
+    "sequelize-auto": "^0.8.8"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/khanhnguyen0827/Capstone-express-ORM.git"
+  "name": "be_cyber_community",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --watch",
+    "start": "node --import=extensionless/register server.js",
+    "dev": "nodemon --import=extensionless/register  server.js",
+    "dev2": "nodemon --import=extensionless/register --env-file .env  server.js"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/khanhnguyen0827/Capstone-express-ORM/issues"
-  },
-  "homepage": "https://github.com/khanhnguyen0827/Capstone-express-ORM#readme",
-  "dependencies": {
-   
-    "bcryptjs": "^3.0.2",
-    "dotenv": "^17.2.0",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
- 
-    "swagger-ui-express": "^5.0.1",
-    "yamljs": "^0.3.0"
-  },
+  "description": "",
   "devDependencies": {
     "nodemon": "^3.1.10"
   }
