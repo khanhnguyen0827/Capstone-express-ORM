@@ -20,7 +20,6 @@
  *             required:
  *               - email
  *               - password
- *               - full_name
  *             properties:
  *               email:
  *                 type: string
@@ -28,9 +27,6 @@
  *               password:
  *                 type: string
  *                 description: Mật khẩu
- *               full_name:
- *                 type: string
- *                 description: Họ và tên đầy đủ
  *     responses:
  *       200:
  *         description: Đăng ký thành công
