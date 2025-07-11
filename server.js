@@ -3,14 +3,7 @@ import { handleError } from "./src/common/helpers/handle-err.helper";
 import rootRouter from "./src/routers/root.router";
 import logApi from "./src/common/morgan/init.morgan";
 import cors from "cors";
-import { createHandler } from "graphql-http/lib/use/express";
-import schema from "./src/common/graphql/schema.graphql";
-import root from "./src/common/graphql/root.graphql";
-import { ruruHTML } from "ruru/server";
-import protectGraphQL from "./src/common/graphql/protect.graphql";
 import { createServer } from "http";
-import initSocket from "./src/common/socket/init.socket";
-
 var app = express();
 
 // middleware
@@ -23,26 +16,6 @@ app.use(
 );
 app.use(express.static("."));
 
-// Serve the GraphiQL IDE.
-app.get("/ruru", (_req, res) => {
-   res.type("html");
-   res.end(ruruHTML({ endpoint: "/graphql" }));
-});
-// Create and use the GraphQL handler.
-app.all(
-   "/graphql",
-   createHandler({
-      schema: schema,
-      rootValue: root,
-      context: async (req) => {
-         const user = await protectGraphQL(req);
-         return {
-            user: user,
-         };
-      },
-   })
-);
-
 // gắn rootRouter vào app
 // app: http://localhost:3069
 app.use(rootRouter);
@@ -52,7 +25,8 @@ app.use(handleError);
 
 const httpServer = createServer(app);
 
-initSocket(httpServer);
+// Removed socket initialization
+// initSocket(httpServer);
 
 httpServer.listen(3069, () => {
    console.log(`Server running on port http://localhost:3069`);
@@ -83,22 +57,7 @@ httpServer.listen(3069, () => {
  * nodemailer: gửi email
  * jest: giúp viết unit test
  * swagger-ui-express: tích hợp swagger
- * graphql-http: giúp tương tác với graphql
- * graphql: core của graphql
- * ruru: công cụ gọi api graphql giống postman
  * multer: giúp upload file
  * cloudinary: upload hình ảnh lên đám mây
  * socket.io: realtime hỗ trợ chức năng chat
- */
-
-/**
- * 
-const data = pm.response.json()
-
-pm.globals.set("accessToken",  data.data.accessToken )
-pm.globals.set("refreshToken",  data.data.refreshToken )
- */
-
-/*
-"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --watch",
  */

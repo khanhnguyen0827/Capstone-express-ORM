@@ -1,6 +1,6 @@
-import articleSwagger from "./article.swagger";
 import authSwagger from "./auth.swagger";
 import userSwagger from "./user.swagger";
+import imageSwagger from "./image.swagger";
 
 const swaggerDocument = {
    openapi: "3.1.1",
@@ -28,9 +28,9 @@ const swaggerDocument = {
       },
    },
    paths: {
-      ...articleSwagger,
       ...authSwagger,
       ...userSwagger,
+      ...imageSwagger,
    },
 };
 
