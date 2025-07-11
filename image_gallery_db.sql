@@ -1,77 +1,82 @@
--- Tạo cơ sở dữ liệu mới
-CREATE DATABASE IF NOT EXISTS image_gallery_db;
+Đây là lược đồ cơ sở dữ liệu MySQL với chú thích bằng tiếng Việt và một số dữ liệu mẫu để bạn có thể kiểm tra.
 
--- Sử dụng cơ sở dữ liệu vừa tạo
-USE image_gallery_db;
+-- Cơ sở dữ liệu: image_gallery_db
+-- Đây là tên cơ sở dữ liệu bạn có thể tạo trước khi chạy các lệnh này.
+-- Ví dụ: CREATE DATABASE image_gallery_db;
+-- USE image_gallery_db;
 
--- Bảng Users để lưu trữ thông tin người dùng
--- Bao gồm các trường cơ bản như ID, tên người dùng, email, mật khẩu
-CREATE TABLE IF NOT EXISTS Users (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL, -- Lưu trữ hash của mật khẩu
-    full_name VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- Bảng: Users (Người dùng)
+-- Lưu trữ thông tin về người dùng của ứng dụng.
+CREATE TABLE Users (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- ID duy nhất cho mỗi người dùng
+    username VARCHAR(255) NOT NULL UNIQUE, -- Tên đăng nhập, phải là duy nhất
+    email VARCHAR(255) NOT NULL UNIQUE, -- Email của người dùng, phải là duy nhất
+    password_hash VARCHAR(255) NOT NULL, -- Mã băm của mật khẩu (nên được băm an toàn)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Thời gian tạo tài khoản
 );
 
--- Bảng Images để lưu trữ thông tin về các hình ảnh
--- Bao gồm ID hình ảnh, ID người tạo, tên hình ảnh, đường dẫn URL, mô tả
-CREATE TABLE IF NOT EXISTS Images (
-    image_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL, -- ID của người tạo hình ảnh
-    image_name VARCHAR(255) NOT NULL,
-    image_url VARCHAR(255) NOT NULL, -- Đường dẫn URL đến hình ảnh
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE -- Khi người dùng bị xóa, hình ảnh của họ cũng bị xóa
+-- Bảng: Images (Hình ảnh)
+-- Lưu trữ thông tin về các hình ảnh được tải lên.
+CREATE TABLE Images (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- ID duy nhất cho mỗi hình ảnh
+    user_id INT NOT NULL, -- ID của người dùng đã tải lên hình ảnh này (khóa ngoại đến bảng Users)
+    title VARCHAR(255) NOT NULL, -- Tiêu đề của hình ảnh
+    description TEXT, -- Mô tả chi tiết về hình ảnh (có thể để trống)
+    image_url VARCHAR(255) NOT NULL, -- URL hoặc đường dẫn đến tệp hình ảnh
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Thời gian tải lên hình ảnh
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE -- Khi người dùng bị xóa, tất cả hình ảnh của họ cũng sẽ bị xóa
 );
 
--- Bảng Comments để lưu trữ các bình luận về hình ảnh
--- Bao gồm ID bình luận, ID người dùng, ID hình ảnh, nội dung bình luận
-CREATE TABLE IF NOT EXISTS Comments (
-    comment_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL, -- ID của người bình luận
-    image_id INT NOT NULL, -- ID của hình ảnh được bình luận
-    comment_text TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (image_id) REFERENCES Images(image_id) ON DELETE CASCADE
+-- Bảng: Comments (Bình luận)
+-- Lưu trữ các bình luận của người dùng về hình ảnh.
+CREATE TABLE Comments (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- ID duy nhất cho mỗi bình luận
+    image_id INT NOT NULL, -- ID của hình ảnh được bình luận (khóa ngoại đến bảng Images)
+    user_id INT NOT NULL, -- ID của người dùng đã bình luận (khóa ngoại đến bảng Users)
+    comment_text TEXT NOT NULL, -- Nội dung của bình luận
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Thời gian bình luận được tạo
+    FOREIGN KEY (image_id) REFERENCES Images(id) ON DELETE CASCADE, -- Khi hình ảnh bị xóa, các bình luận liên quan cũng sẽ bị xóa
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE -- Khi người dùng bị xóa, các bình luận của họ cũng sẽ bị xóa
 );
 
--- Bảng SavedImages để lưu trữ các hình ảnh mà người dùng đã lưu
--- Bao gồm ID lưu, ID người dùng, ID hình ảnh
-CREATE TABLE IF NOT EXISTS SavedImages (
-    saved_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL, -- ID của người dùng đã lưu
-    image_id INT NOT NULL, -- ID của hình ảnh được lưu
-    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (user_id, image_id), -- Đảm bảo một người dùng không thể lưu cùng một hình ảnh nhiều lần
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (image_id) REFERENCES Images(image_id) ON DELETE CASCADE
+-- Bảng: SavedImages (Hình ảnh đã lưu)
+-- Lưu trữ thông tin về các hình ảnh mà người dùng đã lưu (yêu thích).
+CREATE TABLE SavedImages (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- ID duy nhất cho mỗi bản ghi lưu
+    user_id INT NOT NULL, -- ID của người dùng đã lưu hình ảnh (khóa ngoại đến bảng Users)
+    image_id INT NOT NULL, -- ID của hình ảnh đã được lưu (khóa ngoại đến bảng Images)
+    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Thời gian hình ảnh được lưu
+    UNIQUE (user_id, image_id), -- Đảm bảo một người dùng chỉ có thể lưu một hình ảnh một lần
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE, -- Khi người dùng bị xóa, các hình ảnh đã lưu của họ cũng sẽ bị xóa
+    FOREIGN KEY (image_id) REFERENCES Images(id) ON DELETE CASCADE -- Khi hình ảnh bị xóa, các bản ghi lưu liên quan cũng sẽ bị xóa
 );
 
--- Thêm một số dữ liệu mẫu
-INSERT INTO Users (username, email, password_hash, full_name) VALUES
-('alice_wonder', 'alice.w@example.com', 'hashed_pw_alice', 'Alice Wonderland'),
-('bob_builder', 'bob.b@example.com', 'hashed_pw_bob', 'Bob The Builder'),
-('charlie_chaplin', 'charlie.c@example.com', 'hashed_pw_charlie', 'Charlie Chaplin');
+-- Dữ liệu mẫu để kiểm tra
 
-INSERT INTO Images (user_id, image_name, image_url, description) VALUES
-(1, 'Mystic Forest', 'https://placehold.co/600x400/90EE90/000000?text=Mystic+Forest', 'A serene and mystical forest scene.'),
-(1, 'Mountain Peak', 'https://placehold.co/600x400/87CEEB/000000?text=Mountain+Peak', 'Breathtaking view from a high mountain peak.'),
-(2, 'Urban Sunset', 'https://placehold.co/600x400/FFD700/000000?text=Urban+Sunset', 'A vibrant sunset over a bustling city.'),
-(3, 'Ocean Waves', 'https://placehold.co/600x400/4682B4/FFFFFF?text=Ocean+Waves', 'Powerful ocean waves crashing on the shore.');
+-- Chèn dữ liệu vào bảng Users
+INSERT INTO Users (username, email, password_hash) VALUES
+('nguyenvana', 'nguyenvana@example.com', 'hashed_password_1'), -- Mật khẩu đã được băm
+('tranvanb', 'tranvanb@example.com', 'hashed_password_2'),   -- Mật khẩu đã được băm
+('lethic', 'lethic@example.com', 'hashed_password_3');     -- Mật khẩu đã được băm
 
-INSERT INTO Comments (user_id, image_id, comment_text) VALUES
-(2, 1, 'This forest looks so peaceful!'),
-(3, 1, 'I wish I could be there right now.'),
-(1, 3, 'The colors in this sunset are incredible!'),
-(2, 4, 'Love the power of the ocean.'),
-(3, 2, 'What an amazing view!');
+-- Chèn dữ liệu vào bảng Images
+INSERT INTO Images (user_id, title, description, image_url) VALUES
+(1, 'Phong cảnh núi non', 'Một bức ảnh đẹp về núi non hùng vĩ.', 'https://placehold.co/600x400/000000/FFFFFF?text=Mountain'),
+(1, 'Thành phố về đêm', 'Ánh đèn lung linh của thành phố khi màn đêm buông xuống.', 'https://placehold.co/600x400/000000/FFFFFF?text=CityNight'),
+(2, 'Bãi biển hoàng hôn', 'Hoàng hôn tuyệt đẹp trên bãi biển yên bình.', 'https://placehold.co/600x400/000000/FFFFFF?text=SunsetBeach'),
+(3, 'Động vật hoang dã', 'Một chú sư tử đang nghỉ ngơi trong tự nhiên.', 'https://placehold.co/600x400/000000/FFFFFF?text=Wildlife');
 
+-- Chèn dữ liệu vào bảng Comments
+INSERT INTO Comments (image_id, user_id, comment_text) VALUES
+(1, 2, 'Bức ảnh này thật tuyệt vời!'),
+(1, 3, 'Tôi rất thích phong cảnh này.'),
+(2, 1, 'Thành phố về đêm luôn có vẻ đẹp riêng.'),
+(3, 1, 'Hoàng hôn trên biển luôn lãng mạn.'),
+(4, 2, 'Chú sư tử trông rất uy nghiêm.');
+
+-- Chèn dữ liệu vào bảng SavedImages
 INSERT INTO SavedImages (user_id, image_id) VALUES
-(1, 3), -- Alice saved Urban Sunset
-(2, 1), -- Bob saved Mystic Forest
-(2, 2), -- Bob saved Mountain Peak
-(3, 1); -- Charlie saved Mystic Forest
+(1, 3), -- Người dùng 1 lưu hình ảnh 3
+(2, 1), -- Người dùng 2 lưu hình ảnh 1
+(3, 2), -- Người dùng 3 lưu hình ảnh 2
+(1, 4); -- Người dùng 1 lưu hình ảnh 4

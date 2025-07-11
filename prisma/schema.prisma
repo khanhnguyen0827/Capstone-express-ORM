@@ -8,50 +8,49 @@ datasource db {
 }
 
 model Comments {
-  comment_id   Int       @id @default(autoincrement())
-  user_id      Int
+  id           Int       @id @default(autoincrement())
   image_id     Int
+  user_id      Int
   comment_text String    @db.Text
   created_at   DateTime? @default(now()) @db.Timestamp(0)
-  Users        Users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "Comments_ibfk_1")
-  Images       Images    @relation(fields: [image_id], references: [image_id], onDelete: Cascade, onUpdate: NoAction, map: "Comments_ibfk_2")
+  Images       Images    @relation(fields: [image_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Comments_ibfk_2")
+  Users        Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Comments_ibfk_1")
 
   @@index([image_id], map: "image_id")
   @@index([user_id], map: "user_id")
 }
 
 model Images {
-  image_id    Int           @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   user_id     Int
-  image_name  String        @db.VarChar(255)
-  image_url   String        @db.VarChar(255)
+  title       String        @db.VarChar(255)
   description String?       @db.Text
+  image_url   String        @db.VarChar(255)
   created_at  DateTime?     @default(now()) @db.Timestamp(0)
   Comments    Comments[]
-  Users       Users         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "Images_ibfk_1")
+  Users       Users         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Images_ibfk_1")
   SavedImages SavedImages[]
 
   @@index([user_id], map: "user_id")
 }
 
 model SavedImages {
-  saved_id Int       @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   user_id  Int
   image_id Int
   saved_at DateTime? @default(now()) @db.Timestamp(0)
-  Users    Users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "SavedImages_ibfk_1")
-  Images   Images    @relation(fields: [image_id], references: [image_id], onDelete: Cascade, onUpdate: NoAction, map: "SavedImages_ibfk_2")
+  Users    Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "SavedImages_ibfk_1")
+  Images   Images    @relation(fields: [image_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "SavedImages_ibfk_2")
 
   @@unique([user_id, image_id], map: "user_id")
   @@index([image_id], map: "image_id")
 }
 
 model Users {
-  user_id       Int           @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   username      String        @unique(map: "username") @db.VarChar(255)
   email         String        @unique(map: "email") @db.VarChar(255)
   password_hash String        @db.VarChar(255)
-  full_name     String?       @db.VarChar(255)
   created_at    DateTime?     @default(now()) @db.Timestamp(0)
   Comments      Comments[]
   Images        Images[]
