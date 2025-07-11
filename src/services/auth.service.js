@@ -56,7 +56,53 @@ const authService = {
       // token: access-token | refresh-token
       const tokens = tokenService.createTokens(userExist.id);
 
-      return tokens;
+      // Return user info with tokens
+      return {
+         user: {
+            id: userExist.id,
+            email: userExist.email,
+            fullName: userExist.fullName,
+         },
+         tokens: tokens,
+      };
+   },
+   getInfo: async (userId) => {
+      if (!userId) {
+         throw new BadrequestException("Không có userId");
+      }
+      const user = await prisma.users.findUnique({
+         where: { id: userId },
+         select: {
+            id: true,
+            email: true,
+            fullName: true,
+         },
+      });
+      if (!user) {
+         throw new BadrequestException("Người dùng không tồn tại");
+      }
+      return user;
+   },
+
+   refreshToken: async (refreshToken) => {
+      if (!refreshToken) {
+         throw new BadrequestException("Không có refresh token");
+      }
+      try {
+         const decoded = tokenService.verifyRefreshToken(refreshToken);
+         const userId = decoded.userId;
+         // Tạo token mới
+         const tokens = tokenService.createTokens(userId);
+         return tokens;
+      } catch (error) {
+         throw new UnauthorizedException("Refresh token không hợp lệ hoặc đã hết hạn");
+      }
+   },
+
+   logout: async (refreshToken) => {
+      // Nếu lưu refresh token trong DB hoặc cache, xóa token ở đây
+      // Hiện tại giả sử không lưu, chỉ trả về thành công
+      return { message: "Đăng xuất thành công" };
    },
 };
 
