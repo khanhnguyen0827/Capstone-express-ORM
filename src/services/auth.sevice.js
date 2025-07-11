@@ -14,7 +14,11 @@ const authService = {
    
   register: async (req) => {
 
-    const { fullName, password, email } = req.body;
+    const { full_name, password, email } = req.body;
+
+    if (!email) {
+      throw new BadrequestException("Email không được để trống");
+    }
 
     //Tìm kiếm người dùng theo email có trong cơ sở dữ liệu
     const userexist = await prisma.users.findUnique({
@@ -26,28 +30,24 @@ const authService = {
     // Nếu người dùng đã tồn tại, trả về thông báo lỗi  
     if (userexist) {
       throw new BadrequestException(`Email đã được đăng ký`);
-      // Nếu người dùng đã tồn tại, ném ra lỗi BadrequestException
-      // Nếu người dùng đã tồn tại, trả về thông báo lỗi
-}
+    }
 
-//mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
-//dúng bcrypt để mã hóa mật khẩu
-    // const hashedPassword = await bcrypt.hash(password, 10);
-   const hashedPassword = bcrypt.hashSync(password, 10);
+    // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
+    const hashedPassword = bcrypt.hashSync(password, 10);
 
-    // Tạo người dùng trong cơ sở dữ liệu
+    // Tạo người dùng trong cơ sở dữ liệu với tên trường đúng
     const usernew = await prisma.users.create({
       data: {
-        fullName: fullName,
-        password: hashedPassword,
+        full_name: full_name,
+        password_hash: hashedPassword,
         email: email,
       },
     });
 
     console.log(usernew);
 
-    //usernew.password = undefined; // Ẩn mật khẩu trong kết quả trả về
-    delete usernew.password; // Xóa mật khẩu khỏi đối tượng người dùng
+    // Xóa trường password_hash khỏi đối tượng người dùng trả về
+    delete usernew.password_hash;
    
     return usernew;
   } ,
