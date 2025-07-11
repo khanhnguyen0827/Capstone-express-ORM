@@ -9,11 +9,7 @@ import logAPI from "./src/common/morgan/init.morgan.js";
 
 import cors from "cors";
 
-
-
-
-
-
+import { setupSwagger } from "./src/common/swagger/index.js";
 
 const app = express();
 
@@ -22,18 +18,13 @@ app.use(express.json());//Chuyển dạng json sang đối tượng js trên req
 app.use(logAPI);//thư viện log api (morgan + chalk)
 
 app.use(cors({ origin: ["http://localhost:3000","http://localhost:3001"] }));
-    
-
 
 app.use("/",rootRouter);// Khoi tao router
 
-
-
-
+setupSwagger(app);
 
 // Middleware bắt lỗi
 app.use(    handleErr)
-
 
 // Tạo server 
 // Sử dụng app.listen() để tạo server và lắng nghe các yêu cầu từ clien
@@ -99,6 +90,5 @@ app.listen(3069, () => {
  * 
  * dùng để tạo file test cho code
  * npm i @types/jest
-
+ *
  */
-

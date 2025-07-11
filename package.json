@@ -1,14 +1,13 @@
 {
   "dependencies": {
     "@prisma/client": "^6.8.2",
-    "@types/jest": "^29.5.14",
     "bcrypt": "^6.0.0",
     "chalk": "^5.4.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "extensionless": "^1.9.9",
-    "google-auth-library": "^9.15.1",
+    "google-auth-library": "^9.0.0",
     "jest": "^30.0.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
@@ -17,7 +16,8 @@
     "nodemo": "^1.0.0",
     "prisma": "^6.8.2",
     "sequelize": "^6.37.7",
-    "sequelize-auto": "^0.8.8"
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "name": "be_cyber_community",
   "version": "1.0.0",
