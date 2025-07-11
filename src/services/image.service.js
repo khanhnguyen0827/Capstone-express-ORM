@@ -9,7 +9,7 @@ const imageService = {
   searchImages: async (name) => {
     return await prisma.images.findMany({
       where: {
-        name: {
+        image_name: {
           contains: name,
           mode: 'insensitive',
         },
@@ -19,9 +19,9 @@ const imageService = {
 
   getImageDetail: async (image_id) => {
     const image = await prisma.images.findUnique({
-      where: { id: Number(image_id) },
+      where: { image_id: Number(image_id) },
       include: {
-        creator: true, // assuming relation field name is creator
+        users: true,
       },
     });
     if (!image) {
@@ -32,8 +32,8 @@ const imageService = {
 
   getImageComments: async (image_id) => {
     return await prisma.comments.findMany({
-      where: { imageId: Number(image_id) },
-      orderBy: { createdAt: 'desc' },
+      where: { image_id: Number(image_id) },
+      orderBy: { commented_at: 'desc' },
     });
   },
 
@@ -41,10 +41,10 @@ const imageService = {
     if (!user) {
       throw new BadrequestException('User not authenticated');
     }
-    const saved = await prisma.savedImages.findFirst({
+    const saved = await prisma.saved_images.findFirst({
       where: {
-        userId: user.id,
-        imageId: Number(image_id),
+        user_id: user.user_id,
+        image_id: Number(image_id),
       },
     });
     return !!saved;
@@ -56,8 +56,8 @@ const imageService = {
     }
     const newComment = await prisma.comments.create({
       data: {
-        userId: user.id,
-        imageId: Number(image_id),
+        user_id: user.user_id,
+        image_id: Number(image_id),
         content: commentData.content,
       },
     });
@@ -69,16 +69,16 @@ const imageService = {
       throw new BadrequestException('User not authenticated');
     }
     const image = await prisma.images.findUnique({
-      where: { id: Number(image_id) },
+      where: { image_id: Number(image_id) },
     });
     if (!image) {
       throw new BadrequestException('Image not found');
     }
-    if (image.creatorId !== user.id) {
+    if (image.user_id !== user.user_id) {
       throw new BadrequestException('Not authorized to delete this image');
     }
     await prisma.images.delete({
-      where: { id: Number(image_id) },
+      where: { image_id: Number(image_id) },
     });
   },
 };

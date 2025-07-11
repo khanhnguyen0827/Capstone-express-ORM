@@ -1,4 +1,5 @@
-import { statusCodes } from "./status-code.helper";
+import { statusCodes } from "./status-code.helper.js";
+
 
 // export class BadrequestException extends Error {}
 export class BadrequestException extends Error {

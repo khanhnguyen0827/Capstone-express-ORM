@@ -146,6 +146,8 @@ imageRouter.get('/:image_id/is-saved', imageController.checkImageSaved);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - content
  *             properties:
  *               content:
  *                 type: string
@@ -157,6 +159,13 @@ imageRouter.get('/:image_id/is-saved', imageController.checkImageSaved);
  *           application/json:
  *             schema:
  *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
  */
 imageRouter.post('/:image_id/comments', imageController.postImageComment);
 

@@ -9,7 +9,7 @@
  * @swagger
  * /auth/register:
  *   post:
- *     summary: Đăng ký tài khoản người dùng mới
+ *     summary: Đăng ký người dùng mới
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -17,27 +17,37 @@
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
- *               fullName:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
  *             required:
- *               - fullName
  *               - email
  *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: Email đăng nhập
+ *               password:
+ *                 type: string
+ *                 description: Mật khẩu
  *     responses:
  *       200:
  *         description: Đăng ký thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
  */
 
 /**
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Đăng nhập vào hệ thống
+ *     summary: Đăng nhập người dùng
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -45,30 +55,59 @@
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
  *             required:
  *               - email
  *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: Email đăng nhập
+ *               password:
+ *                 type: string
+ *                 description: Mật khẩu
  *     responses:
  *       200:
- *         description: Đăng nhập thành công
+ *         description: Đăng nhập thành công, trả về token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     accessToken:
+ *                       type: string
+ *                     refreshToken:
+ *                       type: string
  */
 
 /**
  * @swagger
  * /auth/get-info:
  *   get:
- *     summary: Lấy thông tin người dùng đã xác thực
+ *     summary: Lấy thông tin người dùng (cần token)
  *     tags: [Auth]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Thông tin người dùng
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
  */
 
 /**
@@ -84,13 +123,23 @@
  *           schema:
  *             type: object
  *             properties:
- *               code:
+ *               tokenId:
  *                 type: string
- *             required:
- *               - code
+ *                 description: Token ID của Google
  *     responses:
  *       200:
- *         description: Đăng nhập Google thành công
+ *         description: Đăng nhập thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
  */
 
 /**
@@ -106,25 +155,43 @@
  *           schema:
  *             type: object
  *             properties:
- *               accessToken:
- *                 type: string
  *               refreshToken:
  *                 type: string
- *             required:
- *               - accessToken
- *               - refreshToken
+ *                 description: Token làm mới
  *     responses:
  *       200:
- *         description: Làm mới token thành công
+ *         description: Token mới
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
  */
 
 /**
  * @swagger
  * /auth/logout:
  *   post:
- *     summary: Đăng xuất người dùng
+ *     summary: Đăng xuất
  *     tags: [Auth]
  *     responses:
  *       200:
  *         description: Đăng xuất thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
  */

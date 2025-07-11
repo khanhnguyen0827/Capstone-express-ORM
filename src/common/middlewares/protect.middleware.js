@@ -1,6 +1,6 @@
 
 
-import { UnauthorizedException } from "../helpers/exception.helper";
+import { UnauthorizedException } from "../helpers/exception.helper.js";
 import tokenService from "../../services/token.Service.js";
 import prisma from "../prisma/init.prisma.js";
 /**
@@ -34,7 +34,7 @@ req.ischeckprotect = true; // Đặt một thuộc tính để xác định rằ
 
     const user = await prisma.users.findUnique({
         where: {
-            id: decode.userID
+            user_id: decode.userID
         }
     })
 

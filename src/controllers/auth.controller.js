@@ -1,5 +1,5 @@
-import authService from "../services/auth.sevice";
-import { responseSeccess } from "../common/helpers/response.helper";
+import authService from "../services/auth.sevice.js";
+import { responseSeccess } from "../common/helpers/response.helper.js";
 
 
 const authController = {

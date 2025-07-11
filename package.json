@@ -14,7 +14,7 @@
     "mysql2": "^3.14.1",
     "nodemailer": "^7.0.3",
     "nodemo": "^1.0.0",
-    "prisma": "^6.8.2",
+    "prisma": "^6.11.1",
     "sequelize": "^6.37.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"

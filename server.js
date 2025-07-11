@@ -2,14 +2,14 @@ import express from "express";
 // Import express for creating the server and handling requests
 
 import rootRouter from "./src/routers/root.router.js";
-import { handleErr } from "./src/common/helpers/handle-err.helper";
+import { handleErr } from "./src/common/helpers/handle-err.helper.js";
 // Import Sequelize for ORM support
 
 import logAPI from "./src/common/morgan/init.morgan.js";
 
 import cors from "cors";
 
-import { setupSwagger } from "./src/common/swagger/index.js";
+import { setupSwagger } from "./src/common/swagger/swaggerConfig.js";
 
 const app = express();
 

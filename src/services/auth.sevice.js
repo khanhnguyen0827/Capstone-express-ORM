@@ -1,12 +1,12 @@
-import prisma from "../common/prisma/init.prisma";
-import { BadrequestException } from "../common/helpers/exception.helper";
+import prisma from "../common/prisma/init.prisma.js";
+import { BadrequestException } from "../common/helpers/exception.helper.js";
 import bcrypt from "bcrypt";
-import tokenService from "./token.Service";
+import tokenService from "./token.Service.js";
 import { OAuth2Client } from "google-auth-library";
-import {GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET} from "../common/constant/app.constant";
+import {GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET} from "../common/constant/app.constant.js";
 import jwt from "jsonwebtoken"; // Import JWT for decoding tokens
 import  sendmail  from "../common/nodemailer/init.nodemailer.js";
-// import { statusCodes } from "../common/helpers/status-code.helper";  
+// import { statusCodes } from "../common/helpers/status-code.helper.js";  
 
 const authService = {
     // Logic for user login
@@ -77,7 +77,7 @@ const authService = {
     // Trả về thông tin người dùng đã đăng nhập
 
     // token của người dùng  có thể được tạo ra ở đây nếu cần acss token || refresh token
-    const tokens = tokenService.createTokens(user.id);
+    const tokens = tokenService.createTokens(user.user_id);
     //
     sendmail("khanhnguyen0827@gmail.com");
 
@@ -143,7 +143,7 @@ const authService = {
       })
     };
 
-      const tokens = tokenService.createTokens(userExist.id);
+      const tokens = tokenService.createTokens(userExist.user_id);
 
 
       return tokens;
